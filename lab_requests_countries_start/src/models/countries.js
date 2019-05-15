@@ -6,10 +6,9 @@ const Country = function(){
 }
 
 Country.prototype.getData = function(){
-  const request = new RequestHelper('https://restcountries.eu');
+  const request = new RequestHelper('https://restcountries.eu/rest/v2/all');
   request.get((data) => {
-    console.log(data);
-    this.data = data.detail
+    this.data = data
     PubSub.publish('Country:all-countries-ready', this.data);
   })
 }

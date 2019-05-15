@@ -1,25 +1,18 @@
-const RequestHelper = function(url){
-   this.url = url;
- };
+const PubSub = require('../helpers/pub_sub.js');
+const RequestHelper = require('../helpers/request_helper.js');
 
-RequestHelper.prototype.get = function (onComplete){
-   const xhr = new XMLHttpRequest()
-
-   console.log("Away getting data")
-
-   xhr.addEventListener('load', () => {
-     if (xhr.status !== 200){
-       return
-     }
-     const jsonString = (xhr.responseText);
-     const data = JSON.parse(jsonString)
-     onComplete(data)
-   })
-
-   xhr.open('GET', this.url)
-   xhr.setRequestHeader('Accept', 'application/json')
-   xhr.send()
-
+const Country = function(){
+  this.data = null
 }
 
-module.exports = RequestHelper;
+Country.prototype.getData = function(){
+  const request = new RequestHelper('https://restcountries.eu');
+  request.get((data) => {
+    console.log(data);
+    this.data = data.detail
+    PubSub.publish('Country:all-countries-ready', this.data);
+  })
+}
+
+
+module.exports = Country;

@@ -11,7 +11,20 @@ Country.prototype.getData = function(){
     this.data = data
     PubSub.publish('Country:all-countries-ready', this.data);
   })
+
+}
+Country.prototype.bindEvents = function(){
+
+  PubSub.subscribe('SelectView:change', (event) => {
+    const selectedIndex = event.detail;
+    this.publishCountryDetails(selectedIndex);
+  })
+  this.getData();
 }
 
+Country.prototype.publishCountryDetails = function (index) {
+    const selection = this.data[index]
+    PubSub.publish('Country:target-country-ready', selection );
+}
 
 module.exports = Country;
